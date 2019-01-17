@@ -13,11 +13,11 @@
     'use strict';
 
     // Defines the sign-off-by attributes for each account, indexed by GitHub handler
-    const users = {/*
-        'handler-1': {
-            'name': 'User Full Name',
-            'email': 'user-email@example.com',
-        },*/
+    const users = {
+        'dpordomingo': {
+            'name': 'David Pordomingo',
+            'email': 'david.pordomingo.f@gmail.com',
+        },
     };
 
     const getLoggedUser = () => {
@@ -25,11 +25,21 @@
         return userTag && userTag.getAttribute('content');
     };
 
+    const setSignedOffMessage = (i, info) => {
+        i.value=`Signed-off-by: ${info.name} <${info.email}>`;
+    }
+
     const addSignOffForUser = (handler) => {
         const userInfo = users[handler];
         if (!userInfo) return false;
-        document.querySelector('#commit-description-textarea').value=`Signed-off-by: ${userInfo.name} <${userInfo.email}>`;
-    };
+        document
+            .querySelectorAll(`\
+                #commit-description-textarea,
+                .js-suggestion-commit-message,
+                textarea[aria-label="Commit message"]
+            `)
+            .forEach(elem => setSignedOffMessage(elem, userInfo));
+    }
 
     const loggedUser = getLoggedUser();
     addSignOffForUser(loggedUser);
